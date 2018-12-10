@@ -1,0 +1,4 @@
+Final frequency is 536
+( 1 ms )
+First recuring frequency is 75108
+( 110 ms )
