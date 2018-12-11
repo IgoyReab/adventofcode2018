@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,7 @@ public class Day_1 {
         do {
             for (int i = 0; i < freqShifts.length; i++) {     // loop through the array
                 sum = sum + freqShifts[i];
-                found = !(foundFrequencies.add(sum));       // found becomes true if  an element that already exist is added, if that happens the recuring Frequency has been found
+                found = !(foundFrequencies.add(sum));        // found becomes true if  an element that already exist is added, if that happens the recuring Frequency has been found
                 if (found) break;
             }
         } while (!found);                                     // try agian if not found
@@ -44,7 +43,7 @@ public class Day_1 {
 
         LocalTime start = LocalTime.now();
 
-        Files.readLines(new File("src/main/resources/day1.txt"), Charset.forName("utf-8"));
+        freqShiftsList = Files.readLines(new File("src/main/resources/day1.txt"), Charset.forName("utf-8"));
 
         freqShifts = new Integer[freqShiftsList.size()];
 
@@ -60,12 +59,12 @@ public class Day_1 {
         LocalTime finish = LocalTime.now();
         System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
 
-        System.out.println("( " + (time2 - time1) + " ms )");
+
         
         start = LocalTime.now();
         System.out.println("First recuring frequency is " + firstRecuringFrequency());
-        time2 = new Date().getTime();
-        System.out.println("( " + (time2 - time1) + " ms )");
 
+        finish = LocalTime.now();
+        System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
     }
 }
