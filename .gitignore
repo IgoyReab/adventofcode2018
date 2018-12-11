@@ -9,3 +9,4 @@ bin
 MANIFEST.MF
 *.PRD.csv
 .attach*
+compiler.xml
