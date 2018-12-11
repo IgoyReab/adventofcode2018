@@ -1,2 +1,0 @@
-NNumber of overlapping square inches  96569
- ( 1822 ms )
