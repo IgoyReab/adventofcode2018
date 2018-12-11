@@ -2,137 +2,127 @@ package nl.yogibear;
 
 import lombok.*;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalTime;
+
+@Data
+class Marble {
+    public Marble(int idValue) {
+        this.idValue = idValue;
+    }
+    private int idValue;
+    Marble previousMarble;
+    Marble nextMarble;
+
+    boolean current;
+}
+
+@Data
+class Game {
+
+    Marble marble;
+    Marble currentMarble;
+    final long[] players;
+
+    public Game(int numPlayers, int numMarbles) {
+
+        players = new long[numPlayers + 1];
+        Marble m = new Marble(0);
+        m.setPreviousMarble(m);
+        m.setNextMarble(m);
+        m.setCurrent(true);
+        this.currentMarble = m;
+        this.marble = m;
+        for (int i = 0; i < players.length; i++) {
+            players[i] = 0;
+        }
+    }
+
+    public void insertMarble(int id) {
+        marble.setCurrent(false);
+
+        Marble previous = marble.getNextMarble();
+        Marble next = marble.getNextMarble().getNextMarble();
+
+        Marble current = new Marble(id);
+        current.setNextMarble(next);
+        current.setPreviousMarble(previous);
+        current.setCurrent(true);
+        this.currentMarble = current;
+
+        this.marble = current;
+
+        previous.setNextMarble(current);
+        next.setPreviousMarble(current);
+    }
+
+    public long getHighScore() {
+        long result = 0;
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] > result) result = players[i];
+        }
+        return result;
+    }
+
+    public void scoreMarble(int id, int player) {
+        marble.setCurrent(false);
+        for (int x = 0; x < 7; x++) {
+            this.marble = this.marble.getPreviousMarble();
+        }
+        players[player] = players[player] + id + marble.getIdValue();
+        marble.getNextMarble().setCurrent(true);
+        this.currentMarble = marble.getNextMarble();
+
+        marble.getPreviousMarble().setNextMarble(marble.getNextMarble());
+        marble.getNextMarble().setPreviousMarble(marble.getPreviousMarble());
+
+        setCurrentMarble();
+    }
+
+    public void setCurrentMarble() {
+        this.marble = this.currentMarble;
+    }
+
+    public Marble getMarble(Marble m, int id) {
+        if (m.getIdValue() == id) {
+            return (m);
+        } else {
+            return (getMarble(m.getNextMarble(), id));
+        }
+    }
+}
+
 public class Day_9 {
 
-    private static void log(String logLine) {
-        System.out.println(logLine);
-    }
+    final static int PLAYERS = 426;
+    final static int MARBLES = 7205800;
 
-    class Marble {
-        public Marble(int idValue) {
-            this.idValue = idValue;
-        }
+    public static void main(String[] args) throws IOException {
+        LocalTime start = LocalTime.now();
 
-        @Getter
-        @Setter
-        private int idValue;
-        @Getter
-        @Setter
-        Marble previousMarble;
-        @Getter
-        @Setter
-        Marble nextMarble;
-        @Getter
-        @Setter
-        boolean current;
-    }
+        Game game = new Game(PLAYERS, MARBLES);
+        int player = 0;
 
+        for (int x=1; x<=MARBLES; x++) {
+            if (player == PLAYERS ) player = 0;
 
-    class Game {
-
-        Marble marble;
-        final long[] players;
-
-        public Game(int numPlayers, int numMarbles) {
-
-            players = new long[numPlayers + 1];
-            Marble m = new Marble(0);
-            m.setPreviousMarble(m);
-            m.setNextMarble(m);
-            m.setCurrent(true);
-            for (int i =0; i<players.length; i++) {
-                players[i] = 0;
-            }
-
-        }
-
-
-
-        public void insertMarble(int id) {
-
-            setCurrentMarble();
-            marble.setCurrent(false);
-
-            Marble n = marble.getNextMarble();
-            Marble p = marble;
-
-            Marble m = new Marble();
-            m.setIdValue(id);
-            m.setNextMarble(n);
-            m.setPreviousMarble(p);
-            m.setCurrent(true);
-
-            n.setPreviousMarble(m);
-            p.setNextMarble(m);
-
-            setCurrentMarble();
-        }
-
-        public long getHighScore(){
-            long result = 0;
-            for (int i =0; i<players.length; i++) {
-                if (players[i] > result) result = players[i];
-            }
-            return result;
-        }
-
-        public void scoreMarble(int id, int player) {
-
-
-            setCurrentMarble();
-
-            for (int x = 0; x < 6; x++) {
-                this.marble = this.marble.getPreviousMarble();
-            }
-
-            players[player] = players[player] + id + marble.getIdValue();
-
-            marble.getPreviousMarble().setNextMarble(marble.getNextMarble());
-            marble.getNextMarble().setPreviousMarble(marble.getPreviousMarble());
-        }
-
-
-
-        public void setCurrentMarble() {
-            this.marble = getCurrent(this.marble);
-        }
-
-
-        public Marble getCurrent(Marble m) {
-            if (m.isCurrent()) {
-                return (m);
+            if ((x % 23) == 0 ){
+                game.scoreMarble(x, player);
             } else {
-                return getCurrent(m.getNextMarble());
+                game.insertMarble(x);
             }
+
+            player++;
         }
 
-        public void findAndSetMarble (int id) {
-            this.marble = getMarble(this.marble, id);
-        }
+        System.out.println("The highscore is : " + game.getHighScore());
 
-        public Marble getMarble(Marble m, int id) {
-            if (m.getIdValue() == id ) {
-                 return (m);
-            } else {
-                 return (getMarble(m.getNextMarble(), id));
-            }
-        }
-
-        final static int PLAYERS = 9;
-        final static int MARBLES = 25;
-
-        public static void main(String[] args) {
-
-            Game game = new Game(PLAYERS, MARBLES);
-
-
-
-
-
-
-        }
-
+        LocalTime finish = LocalTime.now();
+        System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
     }
-
 
 }
+
+
+
