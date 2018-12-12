@@ -6,8 +6,11 @@ import lombok.Data;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -16,8 +19,6 @@ class Point {
     private int y;
     private int vx;
     private int vy;
-    private Point nextPoint;
-    private Point previousPoint;
 
     public Point(int x, int y, int vx, int vy) {
         this.x = x;
@@ -26,33 +27,92 @@ class Point {
         this.vy = vy;
     }
 
-
+    public void advancePoint() {
+        this.x = this.x + this.vx;
+        this.y = this.y + this.vy;
+    }
 }
 
-public class Day_10 {
 
-    static void printMessage(Point p) {
+
+public class Day_10 {
+    static int prevHeight = 100000;
+    static int prevWidth = 1000000;
+
+    static int getMaxHeight(Collection<Point> l) {
+        int result = 0;
+        for( Point p : l) if (result < p.getY()) result = p.getY();
+        return Math.abs(result);
+    }
+
+    static int getMaxWidth(Collection<Point> l) {
+        int result = 0;
+        for( Point p : l) if (result < p.getX()) result = p.getX();
+        return Math.abs(result);
+    }
+
+    static int getMinHeight(Collection<Point> l) {
+        int result = 0;
+        for( Point p : l) if (result > p.getY()) result = p.getY();
+        return Math.abs(result);
+    }
+
+    static int getMinWidth(Collection<Point> l) {
+        int result = 0;
+        for( Point p : l) if (result > p.getX()) result = p.getX();
+        return Math.abs(result);
+    }
+
+    static int getHeight(Collection<Point> l) {
+        int max = getMaxHeight(l);
+        int min = getMinHeight(l);
+        if (max >= min) {
+            return(max * 2);
+        } else {
+            return (min * 2);
+        }
+    }
+
+    static int getWidth(Collection<Point> l) {
+        int max = getMaxWidth(l);
+        int min = getMinWidth(l);
+        if (max >= min) {
+            return(max * 2);
+        } else {
+            return (min * 2);
+        }
+    }
+
+
+    static void printMessage(Collection<Point> list) {
 
         ArrayList<String> lines = new ArrayList<>();
+        int h = getHeight(list);
+        int w = getWidth(list);
 
-        for (int i = 0; i <= Math.abs(thgieh) + Math.abs(height) + 2; i++) {
-            String l = "";
-            for (int j = 0; j <= Math.abs(width) + Math.abs(htdiw) + 2; j++) {
-                l = l + ".";
+        if (!((h < prevHeight) && (w < prevWidth))) {
+
+            System.out.println("height " + h + " Width " + w);
+
+            for (int i = 0; i <= h; i++) {
+                String l = "";
+                for (int j = 0; j <= w; j++) {
+                    //System.out.println(j);
+                    l = l + ".";
+                }
+                lines.add(l);
             }
-            lines.add(l);
-        }
 
-        String line;
+            String line;
 
-        do
-        {
-            if (p != null) {
-                String newLine = "";
+
+            for (Point p : list) {
+                LocalTime start = LocalTime.now();
                 int cY = (lines.size() / 2) + p.getY();
                 line = lines.get(cY);
+                String newLine = "";
 
-                for (int x = 1; x < line.length(); x++) {
+                for (int x = 0; x < line.length(); x++) {
                     int cX = (line.length() / 2) + p.getX();
                     if (x == cX) {
                         newLine = newLine + "#";
@@ -62,76 +122,41 @@ public class Day_10 {
                 }
                 lines.remove(cY);
                 lines.add(cY, newLine);
-                p = p.getNextPoint();
+                LocalTime finish = LocalTime.now();
+                System.out.println("Duration one line (ms): " + Duration.between(start, finish).toMillis());
             }
 
-        } while ( p != null);
-
-        for (String s: lines) System.out.println(s);
-
+            for (String s : lines) {
+                System.out.println(s);
+            }
+        }
+        prevHeight = h;
+        prevWidth = w;
     }
-
-    static void advancePoint(Point p) {
-            p.setX( p.getX() + p.getVx());
-            p.setY( p.getY() + p.getVy());
-    }
-
-    static int width = 0;
-    static int height = 0;
-    static int htdiw = 0;
-    static int thgieh = 0;
 
     public static void main(String[] args) throws IOException {
         LocalTime start = LocalTime.now();
 
         List<String> input = null;
+        Collection<Point> points = new ArrayList<>();
 
-        input = Files.readLines(new File("src/main/resources/day10-tst.txt"), Charset.forName("utf-8"));
-        Point point = null;
-        Point previous = null;
-        Point startPoint = null;
-
-
-
+        input = Files.readLines(new File("src/main/resources/day10.txt"), Charset.forName("utf-8"));
 
         for (String s: input) {
             String[] e = s.split("[<>,]");
-            point  = new Point(Integer.parseInt(e[1].trim()), Integer.parseInt(e[2].trim()), Integer.parseInt(e[4].trim()), Integer.parseInt(e[5].trim()));
-            if (startPoint == null) startPoint = point;
-            point.setPreviousPoint(previous);
-            if (previous != null) previous.setNextPoint(point);
-            previous = point;
-            if (Integer.parseInt(e[1].trim()) > width) width = Integer.parseInt(e[1].trim());
-            if (Integer.parseInt(e[2].trim()) > height) height = Integer.parseInt(e[1].trim());
-            if (Integer.parseInt(e[1].trim()) < htdiw) htdiw = Integer.parseInt(e[1].trim());
-            if (Integer.parseInt(e[2].trim()) < thgieh) thgieh = Integer.parseInt(e[1].trim());
+            Point point  = new Point(Integer.parseInt(e[1].trim()), Integer.parseInt(e[2].trim()), Integer.parseInt(e[4].trim()), Integer.parseInt(e[5].trim()));
+
+            points.add(point);
         }
 
 
-        point = startPoint;
 
-        width = 10;
-        height = 25;
-        htdiw = 10;
-        thgieh = 25;
-
-        printMessage(point);
-        System.out.println("\n\n");
-
-
-
-
-
-        for (int x=0; x<10; x++) {
-            point = startPoint;
-            do {
-                advancePoint(point);
-                point = point.getNextPoint();
-
-            } while (point != null);
-            point  = startPoint;
-            printMessage(point);
-            System.out.println("\n\n");
-        }
+        int loop = 0;
+        do {
+            loop ++;
+            for (Point p : points) p.advancePoint();
+            printMessage(points);
+            System.out.println(String.format("\n\n"));
+        } while (true);
     }
 }
