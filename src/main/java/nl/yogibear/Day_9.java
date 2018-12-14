@@ -7,13 +7,13 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 @Data
-class Marble {
-    public Marble(int idValue) {
+class Recipe {
+    public Recipe(int idValue) {
         this.idValue = idValue;
     }
     private int idValue;
-    Marble previousMarble;
-    Marble nextMarble;
+    Recipe previousMarble;
+    Recipe nextMarble;
 
     boolean current;
 }
@@ -21,14 +21,14 @@ class Marble {
 @Data
 class Game {
 
-    Marble marble;
-    Marble currentMarble;
+    Recipe marble;
+    Recipe currentMarble;
     final long[] players;
 
     public Game(int numPlayers, int numMarbles) {
 
         players = new long[numPlayers + 1];
-        Marble m = new Marble(0);
+        Recipe m = new Recipe(0);
         m.setPreviousMarble(m);
         m.setNextMarble(m);
         m.setCurrent(true);
@@ -42,10 +42,10 @@ class Game {
     public void insertMarble(int id) {
         marble.setCurrent(false);
 
-        Marble previous = marble.getNextMarble();
-        Marble next = marble.getNextMarble().getNextMarble();
+        Recipe previous = marble.getNextMarble();
+        Recipe next = marble.getNextMarble().getNextMarble();
 
-        Marble current = new Marble(id);
+        Recipe current = new Recipe(id);
         current.setNextMarble(next);
         current.setPreviousMarble(previous);
         current.setCurrent(true);
@@ -84,7 +84,7 @@ class Game {
         this.marble = this.currentMarble;
     }
 
-    public Marble getMarble(Marble m, int id) {
+    public Recipe getMarble(Recipe m, int id) {
         if (m.getIdValue() == id) {
             return (m);
         } else {
