@@ -31,108 +31,137 @@ class Point {
         this.x = this.x + this.vx;
         this.y = this.y + this.vy;
     }
+
+    public void reversePoint() {
+        this.x = this.x - this.vx;
+        this.y = this.y - this.vy;
+    }
 }
 
+@Data
+class Projection {
+    Collection<Point> points;
+    long surfaceArea;
+    int width;
+    int height;
 
+    public Projection(List<String> input) {
 
-public class Day_10 {
-    static int prevHeight = 100000;
-    static int prevWidth = 1000000;
+        int maxWidth = 0;
+        int maxHeight = 0;
 
-    static int getMaxHeight(Collection<Point> l) {
-        int result = 0;
-        for( Point p : l) if (result < p.getY()) result = p.getY();
-        return Math.abs(result);
-    }
+        points = new ArrayList<>();
 
-    static int getMaxWidth(Collection<Point> l) {
-        int result = 0;
-        for( Point p : l) if (result < p.getX()) result = p.getX();
-        return Math.abs(result);
-    }
-
-    static int getMinHeight(Collection<Point> l) {
-        int result = 0;
-        for( Point p : l) if (result > p.getY()) result = p.getY();
-        return Math.abs(result);
-    }
-
-    static int getMinWidth(Collection<Point> l) {
-        int result = 0;
-        for( Point p : l) if (result > p.getX()) result = p.getX();
-        return Math.abs(result);
-    }
-
-    static int getHeight(Collection<Point> l) {
-        int max = getMaxHeight(l);
-        int min = getMinHeight(l);
-        if (max >= min) {
-            return(max * 2);
-        } else {
-            return (min * 2);
+        for (String s: input) {
+            String[] e = s.split("[<>,]");
+            Point point  = new Point(Integer.parseInt(e[1].trim()), Integer.parseInt(e[2].trim()), Integer.parseInt(e[4].trim()), Integer.parseInt(e[5].trim()));
+            if (Math.abs(point.getX()) > maxWidth) maxWidth = Math.abs(point.getX());
+            if (Math.abs(point.getY()) > maxHeight) maxHeight = Math.abs(point.getY());
+            this.points.add(point);
         }
+
+        this.width = 2 * maxWidth;
+        this.height = 2 * maxHeight;
+
+        long a = this.width;
+        long b = this.height;
+
+        this.surfaceArea = a * b;
     }
 
-    static int getWidth(Collection<Point> l) {
-        int max = getMaxWidth(l);
-        int min = getMinWidth(l);
-        if (max >= min) {
-            return(max * 2);
-        } else {
-            return (min * 2);
+
+    void reverseSky () {
+
+        int maxWidth = 0;
+        int maxHeight = 0;
+
+        for( Point p : this.points) {
+            p.reversePoint();
+            if (Math.abs(p.getX())  > maxWidth) maxWidth = Math.abs(p.getX());
+            if (Math.abs(p.getY())  > maxHeight) maxHeight = Math.abs(p.getY());
+
         }
+
+        this.width = maxWidth * 2;
+        this.height = maxHeight * 2;
+
+        long a = this.width;
+        long b = this.height;
+
+        this.surfaceArea = a * b;
     }
 
+    void advanceSky () {
 
-    static void printMessage(Collection<Point> list) {
+        int maxWidth = 0;
+        int maxHeight = 0;
+
+        for( Point p : this.points) {
+            p.advancePoint();
+            if (Math.abs(p.getX())  > maxWidth) maxWidth = Math.abs(p.getX());
+            if (Math.abs(p.getY())  > maxHeight) maxHeight = Math.abs(p.getY());
+
+        }
+
+        this.width = maxWidth * 2;
+        this.height =  maxHeight * 2;
+
+        long a = this.width;
+        long b = this.height;
+
+        this.surfaceArea = a * b;
+
+        System.out.println("Width : " + this.width + "  Height : " + this.height);
+    }
+
+    void printMessage() {
 
         ArrayList<String> lines = new ArrayList<>();
-        int h = getHeight(list);
-        int w = getWidth(list);
 
-        if (!((h < prevHeight) && (w < prevWidth))) {
 
-            System.out.println("height " + h + " Width " + w);
-
-            for (int i = 0; i <= h; i++) {
+        for (int i = 0; i <= this.height; i++) {
                 String l = "";
-                for (int j = 0; j <= w; j++) {
+                for (int j = 0; j <= this.width; j++) {
                     //System.out.println(j);
                     l = l + ".";
                 }
                 lines.add(l);
-            }
-
-            String line;
-
-
-            for (Point p : list) {
-                LocalTime start = LocalTime.now();
-                int cY = (lines.size() / 2) + p.getY();
-                line = lines.get(cY);
-                String newLine = "";
-
-                for (int x = 0; x < line.length(); x++) {
-                    int cX = (line.length() / 2) + p.getX();
-                    if (x == cX) {
-                        newLine = newLine + "#";
-                    } else {
-                        newLine = newLine + line.charAt(x);
-                    }
-                }
-                lines.remove(cY);
-                lines.add(cY, newLine);
-                LocalTime finish = LocalTime.now();
-                System.out.println("Duration one line (ms): " + Duration.between(start, finish).toMillis());
-            }
-
-            for (String s : lines) {
-                System.out.println(s);
-            }
         }
-        prevHeight = h;
-        prevWidth = w;
+
+
+        String line;
+
+
+        for (Point p : points) {
+
+            int cY = ((lines.size() / 2) + p.getY());
+
+            line = lines.get(cY);
+            String newLine = "";
+
+            for (int x = 0; x < line.length(); x++) {
+                int cX = (line.length() / 2) + p.getX();
+                if (x == cX) {
+                    newLine = newLine + "#";
+                } else {
+                    newLine = newLine + line.charAt(x);
+                }
+            }
+            lines.remove(cY);
+            lines.add(cY, newLine);
+        }
+
+        for (String s : lines) {
+            System.out.println(s);
+        }
+
+        System.out.println("\n\n");
+
     }
+}
+
+public class Day_10 {
+
 
     public static void main(String[] args) throws IOException {
         LocalTime start = LocalTime.now();
@@ -142,21 +171,35 @@ public class Day_10 {
 
         input = Files.readLines(new File("src/main/resources/day10.txt"), Charset.forName("utf-8"));
 
-        for (String s: input) {
-            String[] e = s.split("[<>,]");
-            Point point  = new Point(Integer.parseInt(e[1].trim()), Integer.parseInt(e[2].trim()), Integer.parseInt(e[4].trim()), Integer.parseInt(e[5].trim()));
+        Projection sky = new Projection(input);
 
-            points.add(point);
-        }
+        long surface = 0;
+        long count = 0;
 
+//        sky.printMessage();
 
-
-        int loop = 0;
         do {
-            loop ++;
-            for (Point p : points) p.advancePoint();
-            printMessage(points);
-            System.out.println(String.format("\n\n"));
-        } while (true);
+            surface = sky.getSurfaceArea();
+            sky.advanceSky();
+            count++;
+//            sky.printMessage();
+//            System.out.println("Surface : " + surface + " < " + sky.getSurfaceArea());
+        }   while (surface > sky.getSurfaceArea()) ;
+
+
+//        for (int x=0; x < 10; x++) {
+//            surface = sky.getSurfaceArea();
+//            sky.advanceSky();
+//            System.out.println("Surface : " + surface + " < " + sky.getSurfaceArea());
+//        }
+
+        sky.reverseSky();
+        count--;
+
+        sky.printMessage();
+        System.out.println("It took : " + count + " seconds ");
+
+        LocalTime finish = LocalTime.now();
+        System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
     }
 }
