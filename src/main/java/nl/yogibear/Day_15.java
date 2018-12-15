@@ -3,157 +3,301 @@ package nl.yogibear;
 import com.google.common.io.Files;
 import lombok.Data;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.charset.Charset;
 import java.util.List;
-import java.util.concurrent.Callable;
-
-public class Util {
-    public static int distance(int x, int y, int a, int b) {
-        return (Math.abs(x - a) + Math.abs(y - b));
-    }
-
-    public static void log(String line, boolean nl) {
-        if (nl) {
-           System.out.println(line);
-        } else {
-            System.out.print(line);
-        }
-    }
-}
-
 
 @Data
 class Coordinate {
+    int x;
+    int y;
+
     public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
+        this.elve = false;
+        this.goblin = false;
+        this.free = false;
+        this.wall = false;
     }
-
-    private int x;
-    private int y;
-}
-
-@Data
-class Soldier {
-    private int x;
-    private int y;
 
     private boolean elve;
     private boolean goblin;
+    private boolean free;
+    private boolean wall;
 
     private int hitPoints;
     private int attackPower;
-
-    public Soldier(int x, int y, boolean elve, boolean goblin) {
-        this.x = x;
-        this.y = y;
-        this.elve = elve;
-        this.goblin = goblin;
-        this.hitPoints = 200;
-        this.attackPower = 3;
-    }
 }
-
 
 @Data
 class Grid {
-    private List<Coordinate> gridList;
-    private List<Coordinate> wallList;
-    private List<Soldier> elveList;
-    private List<Soldier> goblinList;
-    private List<Coordinate> freeList;
+    Coordinate[][] gameGrid;
 
-    public Grid() {
-        this.gridList = new ArrayList<>();
-        this.wallList = new ArrayList<>();
-        this.elveList = new ArrayList<>();
-        this.goblinList = new ArrayList<>();
-        this.freeList = new ArrayList<>();
+    int maxX;
+    int maxY;
+    int goblins;
+    int elves;
+
+    public Grid(int x, int y) {
+        gameGrid = new Coordinate[x][y];
+        maxX = x;
+        maxY = y;
+        goblins = 0;
+        elves = 0;
     }
 
-    public void addWall(Coordinate c) {
-        gridList.add(c);
-        wallList.add(c);
+    public void addWall(int x, int y, Coordinate c) {
+        c.setWall(true);
+        gameGrid[x][y] = c;
     }
 
-    public void addElve(Coordinate c) {
-        gridList.add(c);
-        elveList.add(c);
+    public void addElve(int x, int y, Coordinate c) {
+        c.setElve(true);
+        c.setAttackPower(3);
+        c.setHitPoints(200);
+
+        gameGrid[x][y] = c;
+        elves++;
+
     }
 
-    public void addGoblin(Coordinate c) {
-        gridList.add(c);
-        goblinList.add(c);
+    public void addGoblin(int x, int y, Coordinate c) {
+        c.setGoblin(true);
+        c.setAttackPower(3);
+        c.setHitPoints(200);
+        gameGrid[x][y] = c;
+        goblins++;
     }
 
-    public void addFree(Coordinate c) {
-        gridList.add(c);
-        freeList.add(c);
+    public void addFree(int x, int y, Coordinate c) {
+        c.setFree(true);
+        gameGrid[x][y] = c;
     }
 
-    public void removeElve(int index) {
-        elveList.remove(index);
+
+    public void printGrid() {
+        String line = "";
+
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxY; x++) {
+                if (gameGrid[x][y].isElve()) line = line + "E";
+                if (gameGrid[x][y].isGoblin()) line = line + "G";
+                if (gameGrid[x][y].isWall()) line = line + "#";
+                if (gameGrid[x][y].isFree()) line = line + ".";
+            }
+            System.out.println(line);
+            line = "";
+        }
+
+//        System.out.println(line);
     }
 
-    public void removeGoblin(int index) {
-        elveList.remove(index);
-    }
-
-    public void removeFree(int index) {
-        freeList.remove(index)
-
-
-
-    public Coordinate findCoordinate(int x, int y) {
-        for (Coordinate c : this.gridList) {
-            if ((x == c.getX()) && (y == c.getY())) return c;
+    public Coordinate findNearestElve(int x, int y) {
+        int nearest = 100000;
+        for (int a = 0; a < maxY; a++) {
+            for (int b = 0; b < maxY; b++) {
+                if (gameGrid[x][y].isElve()) {
+                    if (nearest > Util.distance(x, y, a, b)) nearest = Util.distance(x, y, a, b);
+                }
+            }
         }
         return null;
     }
 
-    public Soldier findElve(int x, int y) {
-        for (Soldier s : this.elveList) {
-            if ((x == s.getX()) && (y == s.getY())) return s;
+    public void attack(int x, int y, int a, int b) {
+        gameGrid[a][b].setHitPoints(gameGrid[a][b].getHitPoints() - gameGrid[x][y].getAttackPower());
+        if (gameGrid[a][b].getHitPoints() <= 0) {
+            gameGrid[a][b].setGoblin(false);
+            gameGrid[a][b].setElve(false);
+            gameGrid[a][b].setFree(true);
         }
-        return null;
     }
 
-    public Soldier findGoblin(int x, int y) {
-        for (Soldier s : this.goblinList) {
-            if ((x == s.getX()) && (y == s.getY())) return s;
+
+    public void doElve(int x, int y) {
+        if (goblins > 0) {
+            int hitPoints = 201;
+            boolean goAttack = false;
+            int d = 0;
+            int e = 0;
+
+            int a = x - 1;
+            int b = y;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x + 1;
+            b = y - 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x ;
+            b = y - 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x - 1;
+            b = y - 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x + 1;
+            b = y + 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x;
+            b = y + 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x - 1;
+            b = y + 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x + 1;
+            b = y;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isGoblin()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            if (goAttack) attack(x, y, d, e);
         }
-        return null;
+
     }
 
-    public boolean isWall(int x, int y) {
-        for (Coordinate c : this.wallList) {
-            if ((x == c.getX()) && (y == c.getY())) return true;
+
+    public void doGoblin(int x, int y) {
+        if (elves > 0) {
+            int hitPoints = 201;
+            boolean goAttack = false;
+            int d = 0;
+            int e = 0;
+
+            int a = x - 1;
+            int b = y;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x + 1;
+            b = y - 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x ;
+            b = y - 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x - 1;
+            b = y - 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x + 1;
+            b = y + 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x;
+            b = y + 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x - 1;
+            b = y + 1;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            a = x + 1;
+            b = y;
+            if ((a >= 0) && (a < maxX) && (b >= 0) && (b < maxY) && (gameGrid[a][b].isElve()) && (hitPoints >= gameGrid[a][b].getHitPoints())) {
+                goAttack = true;
+                hitPoints = gameGrid[a][b].getHitPoints();
+                d = a;
+                e = b;
+            }
+
+            if (goAttack) attack(x, y, d, e);
         }
-        return false;
+
+
     }
 
-    public boolean isFree(int x, int y) {
-        for (Coordinate c : this.freeList) {
-            if ((x == c.getX()) && (y == c.getY())) return true;
-        }
-        return false;
-    }
+    public void gameTurn() {
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxY; x++) {
 
-    public boolean isGoblin(int x, int y) {
-        for (Soldier s : this.goblinList) {
-            if ((x == s.getX()) && (y == s.getY())) return true;
-        }
-        return false;
-    }
+                if (gameGrid[x][y].isElve()) doElve(x, y);
+                if (gameGrid[x][y].isGoblin()) doGoblin(x, y);
 
-    public boolean isElve(int x, int y) {
-        for (Soldier s : this.elveList) {
-            if ((x == s.getX()) && (y == s.getY())) return true;
+            }
         }
-        return false;
     }
 }
+
 
 public class Day_15 {
 
@@ -161,26 +305,38 @@ public class Day_15 {
 
         List<String> input = null;
 
-        input = Files.readLines(new File("src/main/resources/day12.txt"), Charset.forName("utf-8"));
+        input = Files.readLines(new File("src/main/resources/day15-tst.txt"), Charset.forName("utf-8"));
 
-        Grid grid = new Grid();
+        Grid grid = new Grid(input.get(0).length(), input.size());
 
-        int y = 0;
-        for (String s : input) {
-            for (int x=0; x<s.length(); x++) {
+        for (int y = 0; y < input.size(); y++) {
+            String s = input.get(y);
+            for (int x = 0; x < s.length(); x++) {
 
-                if (s.charAt(x).equals('#')) {
-                    Coordinate coordinate = new Coordinate(x,y);
-                    grid.
+                Coordinate coordinate = new Coordinate(x, y);
 
+                if (s.charAt(x) == '#') {
+                    grid.addWall(x, y, coordinate);
+                }
 
+                if (s.charAt(x) == 'E') {
+                    grid.addElve(x, y, coordinate);
+                }
 
-                        }
-                    };
+                if (s.charAt(x) == 'G') {
+                    grid.addGoblin(x, y, coordinate);
+                }
+
+                if (s.charAt(x) == '.') {
+                    grid.addFree(x, y, coordinate);
                 }
             }
+        }
 
-
+        grid.printGrid();
+        for (int x = 0; x < 202; x++ ) {
+            grid.gameTurn();
+            grid.printGrid();
         }
     }
 }
