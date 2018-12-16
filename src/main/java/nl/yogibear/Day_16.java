@@ -169,12 +169,12 @@ class Processor {
 
 @Data
 class Testcase {
-   int[] before;
-   int[] instruction;
-   int[] after;
-   int numMatches;
+    int[] before;
+    int[] instruction;
+    int[] after;
+    int numMatches;
 
-   public Testcase(String sBefore, String sInstruction, String sAfter) {
+    public Testcase(String sBefore, String sInstruction, String sAfter) {
         this.numMatches = 0;
         this.before = new int[4];
         this.instruction = new int[4];
@@ -207,207 +207,109 @@ class Testcase {
 
     public void printTestcase(String s, Processor p) {
         System.out.println(s);
-        System.out.println("Before      : [" + before[0] + "] [" + before[1] + "] [" +  before[2] + "] ["  + before[3] + "]");
-        System.out.println("Instructions: [" + instruction[0] + "] [" + instruction[1] + "] [" +  instruction[2] + "] ["  + instruction[3] + "]");
-        System.out.println("After       : [" + after[0] + "] [" + after[1] + "] [" +  after[2] + "] ["  + after[3] + "]");
-        System.out.println("\nProcessor   : [" + p.getRegisters()[0] + "] [" + p.getRegisters()[1] + "] [" +  p.getRegisters()[2] + "] ["  + p.getRegisters()[3] + "]");
+        System.out.println("Before      : [" + before[0] + "] [" + before[1] + "] [" + before[2] + "] [" + before[3] + "]");
+        System.out.println("Instructions: [" + instruction[0] + "] [" + instruction[1] + "] [" + instruction[2] + "] [" + instruction[3] + "]");
+        System.out.println("After       : [" + after[0] + "] [" + after[1] + "] [" + after[2] + "] [" + after[3] + "]");
+        System.out.println("\nProcessor   : [" + p.getRegisters()[0] + "] [" + p.getRegisters()[1] + "] [" + p.getRegisters()[2] + "] [" + p.getRegisters()[3] + "]");
         System.out.println();
     }
 
+    public void doSubTest(String oper, Processor p) {
+
+        p.setRegisters(before);
+
+        switch (oper) {
+            case "ADDR": {
+                p.addr(instruction);
+                break;
+            }
+            case "ADDI": {
+                p.addi(instruction);
+                break;
+            }
+            case "MULR":{
+                p.mulr(instruction);
+                break;
+            }
+            case "MULI":{
+                p.muli(instruction);
+                break;
+            }
+            case "BANR":{
+                p.banr(instruction);
+             break;
+            }
+            case "BANI":{
+                p.bani(instruction);
+                break;
+            }
+            case "BORR":{
+                p.borr(instruction);
+                break;
+            }
+            case "BORI":{
+                p.bori(instruction);
+                break;
+            }
+            case "SETR":{
+                p.setr(instruction);
+                break;
+                    }
+            case "SETI": {
+                p.seti(instruction);
+                break;
+            }
+            case "GTIR":{
+                p.gtir(instruction);
+                break;
+            }
+            case "GTRI":{
+                p.gtri(instruction);
+                break;
+            }
+            case "GTRR":{
+                p.gtrr(instruction);
+                break;
+            }
+            case "EQIR":{
+                p.eqir(instruction);
+                break;
+            }
+            case "EQRI":{
+                p.eqri(instruction);
+                break;
+            }
+            case "EQRR":{
+                p.eqrr(instruction);
+                break;
+            }
+        }
+
+        if ((this.after[0] == p.getRegisters()[0]) &&
+                (this.after[1] == p.getRegisters()[1]) &&
+                (this.after[2] == p.getRegisters()[2]) &&
+                (this.after[3] == p.getRegisters()[3])) {
+            this.numMatches++;
+        }
+    }
+
     public int test(Processor p) {
-//        addr
-        p.setRegisters(before);
-        p.addr(instruction);
-//        printTestcase("\n--- ADDR ---", p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            this.numMatches++;
-            printTestcase("\n--- ADDR ---", p);
-        }
-//        addi
-        p.setRegisters(before);
-        p.addi(instruction);
-//        printTestcase("\n--- ADDI ---", p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            this.numMatches++;
-            printTestcase("\n--- ADDI ---", p);
-        }
-//        mulr
-        p.setRegisters(before);
-        p.mulr(instruction);
-//        printTestcase("\n--- MULR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            this.numMatches++;
-            printTestcase("\n--- MULR ---",p);
-        }
-//        muli
-        p.setRegisters(before);
-        p.muli(instruction);
-//        printTestcase("\n--- MULI ---", p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            this.numMatches++;
-            printTestcase("\n--- MULI ---", p);
-        }
-//        banr
-        p.setRegisters(before);
-        p.banr(instruction);
-//        printTestcase("\n--- BANR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- BANR ---",p);
-            this.numMatches++;
-        }
-//        bani
-        p.setRegisters(before);
-        p.bani(instruction);
-//        printTestcase("\n--- BANI ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- BANI ---",p);
-            this.numMatches++;
-        }
-//        borr
-        p.setRegisters(before);
-        p.borr(instruction);
-//        printTestcase("\n--- BORR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            this.numMatches++;
-            printTestcase("\n--- BORR ---",p);
-        }
-//        bori
-        p.setRegisters(before);
-        p.bori(instruction);
-//        printTestcase("\n--- BORI ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- BORI ---",p);
-            this.numMatches++;
-        }
-//        setr
-        p.setRegisters(before);
-        p.setr(instruction);
-//        printTestcase("\n--- SETR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- SETR ---",p);
-            this.numMatches++;
-        }
-//        seti
-        p.setRegisters(before);
-        p.seti(instruction);
-//        printTestcase("\n--- SETI ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- SETI ---",p);
-            this.numMatches++;
-        }
-//        gtir
-        p.setRegisters(before);
-        p.gtir(instruction);
-//        printTestcase("\n--- GTIR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- GTIR ---",p);
-            this.numMatches++;
-        }
-//        gtri
-        p.setRegisters(before);
-        p.gtri(instruction);
-//        printTestcase("\n--- GTRI ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- GTRI ---",p);
-            this.numMatches++;
-        }
-//        gtrr
-        p.setRegisters(before);
-        p.gtrr(instruction);
-//        printTestcase("\n--- GTRR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- GTRR ---",p);
-            this.numMatches++;
-        }
-//        eqir
-        p.setRegisters(before);
-        p.eqir(instruction);
-//        printTestcase("\n--- EQIR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- EQIR ---",p);
-            this.numMatches++;
-        }
-//        eqri
-        p.setRegisters(before);
-        p.eqri(instruction);
-//        printTestcase("\n--- EQRI ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- EQRI ---",p);
-            this.numMatches++;
-        }
-//        eqrr
-        p.setRegisters(before);
-        p.eqrr(instruction);
-//        printTestcase("\n--- EQRR ---",p);
-
-        if ((this.after[0] == p.getRegisters()[0]) &&
-                (this.after[1] == p.getRegisters()[1]) &&
-                (this.after[2] == p.getRegisters()[2]) &&
-                (this.after[3] == p.getRegisters()[3])) {
-            printTestcase("\n--- EQRR ---",p);
-            this.numMatches++;
-        }
-
+        doSubTest("MULR", p);
+        doSubTest("MULI", p);
+        doSubTest("ADDR", p);
+        doSubTest("ADDI", p);
+        doSubTest("BANR", p);
+        doSubTest("BANI", p);
+        doSubTest("BORR", p);
+        doSubTest("BORI", p);
+        doSubTest("SETR", p);
+        doSubTest("SETI", p);
+        doSubTest("GTIR", p);
+        doSubTest("GTRI", p);
+        doSubTest("GTRR", p);
+        doSubTest("EQIR", p);
+        doSubTest("EQRI", p);
+        doSubTest("EQRR", p);
         return this.numMatches;
     }
 }
@@ -436,9 +338,7 @@ public class Day_16 {
 //            System.out.println("Next ----");
         }
 
-        System.out.println("The number of samples that behave like three or more opcodes are " + result + ".");
-
-
+        System.out.println("The number of samples that behave like three or more opcodes is " + result + ".");
 
         LocalTime finish = LocalTime.now();
         System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
@@ -450,8 +350,6 @@ public class Day_16 {
             Testcase testcase = new Testcase(input.get(x), input.get(x+1), input.get(x + 2));
             if (testcase.test(processor) == 1) {
                 result++;
-
-                System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             }
         }
 
