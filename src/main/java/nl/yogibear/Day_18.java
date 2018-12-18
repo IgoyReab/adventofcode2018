@@ -255,58 +255,81 @@ public class Day_18 {
 
         grid2.calculateGrid();
 
-        ArrayList<LumberGrid> lumberList = new ArrayList<LumberGrid>();
-
-
-        boolean gridIsTheSame = false;
-
-        int count = 0;
-        do {
-            LumberGrid grid3 = new LumberGrid(grid2.maxX, grid2.maxY);
-
-            for (int y = 0; y < grid2.getMaxY(); y++) {
-                for (int x = 0; x < grid2.getMaxX(); x++) {
-                    if (grid2.gameGrid[x][y].getType().equals("#")) {
-                        LumberCoordinate coordinate = new LumberCoordinate(x, y);
-                        grid3.addLumberyard(x, y, coordinate);
-                    }
-
-                    if (grid2.gameGrid[x][y].getType().equals("|")) {
-                        LumberCoordinate coordinate = new LumberCoordinate(x, y);
-                        grid3.addTree(x, y, coordinate);
-                    }
-
-                    if (grid2.gameGrid[x][y].getType().equals(".")) {
-                        LumberCoordinate coordinate = new LumberCoordinate(x, y);
-                        grid3.addOpenground(x, y, coordinate);
-                    }
-                }
-            }
-
-            lumberList.add(grid3);
-
-            count++;
-
+        for (long x = 0; x < 503; x++) {
             grid2.minuteTurn();
+            //          int count = x + 1;
+            //          grid2.printgrid2("After " + count + " minutes:" );
 
-//            grid2.printGrid("After " + count + " minutes:" );
+        }
 
-            for(LumberGrid lg : lumberList) {
+        System.out.println("After 503 minutes the total resource value is " + grid2.getTrees() + " * " + grid2.getLumberyards() + " = " + ( grid2.getTrees() * grid2.getLumberyards()) );
 
-                for (int y = 0; y < grid2.getMaxY(); y++) {
-                    for (int x = 0; x < grid2.getMaxX(); x++) {
-                        String a = grid2.gameGrid[x][y].getType();
-                        String b = lg.gameGrid[x][y].getType();
-                        gridIsTheSame = (a.equals(b));
-                        if (!gridIsTheSame) break;
-                    }
-                    if (!gridIsTheSame) break;
-                }
-            }
-//            System.out.println("Trees : " + grid.getTrees() + " Lumberyards : " + grid.getLumberyards() + " Opengrounds: " + grid.getOpengrounds());
-        } while (!(gridIsTheSame));
+        long count = 1000000000 - 503L;
 
-        System.out.println("\nAfter 1000000000 minutes the total resource value is " + grid2.getTrees() + " * " + grid2.getLumberyards() + " = " + ( grid2.getTrees() * grid2.getLumberyards()) );
+        count = count % 28;
+
+        for (long x = 0; x < count; x++) {
+            grid2.minuteTurn();
+            //          int count = x + 1;
+            //          grid2.printgrid2("After " + count + " minutes:" );
+
+        }
+
+        System.out.println("After 1000000000 minutes the total resource value is " + grid2.getTrees() + " * " + grid2.getLumberyards() + " = " + ( grid2.getTrees() * grid2.getLumberyards()) );
+
+//
+//        ArrayList<LumberGrid> lumberList = new ArrayList<LumberGrid>();
+//
+//
+//        boolean gridIsTheSame = false;
+//
+//        int count = 0;
+//        do {
+//            LumberGrid grid3 = new LumberGrid(grid2.maxX, grid2.maxY);
+//
+//            for (int y = 0; y < grid2.getMaxY(); y++) {
+//                for (int x = 0; x < grid2.getMaxX(); x++) {
+//                    if (grid2.gameGrid[x][y].getType().equals("#")) {
+//                        LumberCoordinate coordinate = new LumberCoordinate(x, y);
+//                        grid3.addLumberyard(x, y, coordinate);
+//                    }
+//
+//                    if (grid2.gameGrid[x][y].getType().equals("|")) {
+//                        LumberCoordinate coordinate = new LumberCoordinate(x, y);
+//                        grid3.addTree(x, y, coordinate);
+//                    }
+//
+//                    if (grid2.gameGrid[x][y].getType().equals(".")) {
+//                        LumberCoordinate coordinate = new LumberCoordinate(x, y);
+//                        grid3.addOpenground(x, y, coordinate);
+//                    }
+//                }
+//            }
+//
+//            lumberList.add(grid3);
+//
+//            count++;
+//
+//            grid2.minuteTurn();
+//
+////            grid2.printGrid("After " + count + " minutes:" );
+//
+//            for(LumberGrid lg : lumberList) {
+//
+//                for (int y = 0; y < grid2.getMaxY(); y++) {
+//                    for (int x = 0; x < grid2.getMaxX(); x++) {
+//                        String a = grid2.gameGrid[x][y].getType();
+//                        String b = lg.gameGrid[x][y].getType();
+//                        gridIsTheSame = (a.equals(b));
+//                        if (!gridIsTheSame) break;
+//                    }
+//                    if (!gridIsTheSame) break;
+//                }
+//            }
+////            System.out.println("Trees : " + grid.getTrees() + " Lumberyards : " + grid.getLumberyards() + " Opengrounds: " + grid.getOpengrounds());
+//        } while (!(gridIsTheSame));
+//
+//        System.out.println("\nAfter 1000000000 minutes the total resource value is " + grid2.getTrees() + " * " + grid2.getLumberyards() + " = " + ( grid2.getTrees() * grid2.getLumberyards()) );
 
         finish = LocalTime.now();
         System.out.println("Part 2 Duration (ms): " + Duration.between(start, finish).toMillis());
