@@ -20,6 +20,15 @@ class Flow {
         for (int i : this.registers) i = 0;
     }
 
+    public void setRegisters(int a, int b, int c, int d, int e, int f){
+            this.registers[0] = a;
+            this.registers[1] = b;
+            this.registers[2] = c;
+            this.registers[3] = d;
+            this.registers[4] = e;
+            this.registers[5] = f;
+    }
+
     public void setRegisters(int[] reg) {
         for (int x = 0; x < reg.length; x++) {
             this.registers[x] = reg[x];
@@ -33,9 +42,9 @@ class Flow {
     }
 
     public void printRegisters(String s, Flow p) {
-        System.out.println(s);
-        System.out.println("\nProcessor   : [" + p.getRegisters()[0] + "] [" + p.getRegisters()[1] + "] [" + p.getRegisters()[2] + "] [" + p.getRegisters()[3] + "] ["  + p.getRegisters()[4] + "] [)" +  + p.getRegisters()[5]);
-        System.out.println();
+        System.out.print(s);
+        System.out.println("  Processor   : [" + p.getRegisters()[0] + "] [" + p.getRegisters()[1] + "] [" + p.getRegisters()[2] + "] [" + p.getRegisters()[3] + "] ["  + p.getRegisters()[4] + "] [" +  + p.getRegisters()[5] + "]");
+//        System.out.println();
     }
 
     public void addr(String[] instr) {
@@ -267,7 +276,7 @@ public class Day_19 {
 
         List<String> input = null;
 
-        input = Files.readLines(new File("src/main/resources/day19-tst.txt"), Charset.forName("utf-8"));
+        input = Files.readLines(new File("src/main/resources/day19.txt"), Charset.forName("utf-8"));
 
         String sFlowRegister = input.get(0);
 
@@ -281,16 +290,44 @@ public class Day_19 {
 
         Flowprogram flow = new Flowprogram();
 
-        for (int x = 0; x < input.size(); x++) {
-            int y = proc.registers[jumpRegister];
-            if (y >= input.size()) break;
-            flow.doInstruction(input.get(y), proc);
-            proc.printRegisters(" x:" + x + " y:" + y, proc);
-        }
+        proc.printRegisters(" y:" + proc.registers[jumpRegister], proc);
+
+        do {
+//            proc.printRegisters(" y:" + proc.registers[jumpRegister], proc);
+//            if (proc.registers[jumpRegister] >= input.size()) break;
+            flow.doInstruction(input.get(proc.registers[jumpRegister]), proc);
+            proc.registers[jumpRegister] = proc.registers[jumpRegister] + 1;
+
+        } while (proc.registers[jumpRegister] < input.size());
 
         System.out.println("The value in register 0 is " + proc.getRegisters()[0]);
 
         LocalTime finish = LocalTime.now();
         System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
+
+        // part 2
+
+        start = LocalTime.now();
+        Flow proc2 = new Flow();
+
+        Flowprogram flow2 = new Flowprogram();
+
+        proc2.setRegisters(1,0,0,0,0,0);
+
+        proc2.printRegisters(" y:" + proc2.registers[jumpRegister], proc2);
+
+        do {
+            proc2.printRegisters(" y:" + proc2.registers[jumpRegister], proc2);
+            flow2.doInstruction(input.get(proc2.registers[jumpRegister]), proc2);
+            proc2.registers[jumpRegister] = proc2.registers[jumpRegister] + 1;
+
+        } while (proc2.registers[jumpRegister] < input.size());
+
+        System.out.println("The value in register 0 is " + proc.getRegisters()[0]);
+
+        finish = LocalTime.now();
+        System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
+
+
     }
 }
