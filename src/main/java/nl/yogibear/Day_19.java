@@ -199,6 +199,9 @@ class Flowprogram {
         this.instruction[2] = f[2];
         this.instruction[3] = f[3];
 
+//        System.out.print(f[0] + " " + f[1] + " " + f[2] + " " + f[3] + " ");
+
+
         switch (this.instruction[0]) {
             case "borr": {
                 p.borr(this.instruction);
@@ -282,25 +285,28 @@ public class Day_19 {
 
         String[] f = sFlowRegister.split(" ");
         int jumpRegister = Integer.parseInt(f[1]);
+        long instructionPointer = 0;
 
 
         input.remove(0);
 
-//        Flow proc = new Flow();
-//
-//        Flowprogram flow = new Flowprogram();
-//
-//  //      proc.printRegisters(" y:" + proc.registers[jumpRegister], proc);
-//
-//        do {
-//            flow.doInstruction(input.get(proc.registers[jumpRegister]), proc);
-//            proc.registers[jumpRegister] = proc.registers[jumpRegister] + 1;
-////            proc.printRegisters(" y:" + proc.registers[jumpRegister], proc);
-//            if (proc.registers[jumpRegister] >= input.size()) break;
-//
-//        } while (proc.registers[jumpRegister] < input.size());
+        Flow proc = new Flow();
 
- //       System.out.println("The value in register 0 is " + proc.getRegisters()[0]);
+        Flowprogram flow = new Flowprogram();
+
+
+        instructionPointer = proc.registers[jumpRegister];
+
+        do {
+            proc.registers[jumpRegister] = instructionPointer;
+            if (instructionPointer >= input.size()) break;
+            flow.doInstruction(input.get((int)instructionPointer), proc);
+            instructionPointer = (proc.registers[jumpRegister] + 1);
+//            proc.printRegisters(" y:" + instructionPointer, proc);
+        } while (instructionPointer < input.size());
+
+     //   proc.printRegisters(" y:" + instructionPointer, proc);
+        System.out.println("The value in register 0 is " + proc.getRegisters()[0]);
 
         LocalTime finish = LocalTime.now();
         System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
@@ -312,32 +318,35 @@ public class Day_19 {
 
         Flowprogram flow2 = new Flowprogram();
 
-//        proc2.setRegisters(1,0,0,0,0,0);
+        proc2.setRegisters(1,0,0,0,0,0);
+        proc2.setRegisters(10551361,10551361,10000000,2,10551361,0);
+        instructionPointer = 3;
+
+        int maxD = (int)Math.sqrt(10551361);
+        int sum=1;
+        for (int i = 2; i <= maxD; i++)
+        {
+            if ((10551361 % i) == 0)
+            {
+                sum += i;
+                int d = 10551361 /i;
+                if (d!=i)
+                    sum+=d;
+            }
+        }
+
+//        do {
+//           proc2.registers[jumpRegister] = instructionPointer;
+//           if (instructionPointer >= input.size()) break;
+//           flow2.doInstruction(input.get((int)instructionPointer), proc2);
+//           instructionPointer = (proc2.registers[jumpRegister] + 1);
+//           proc2.printRegisters(" y:" + instructionPointer, proc2);
+//        } while (instructionPointer < input.size());
 //
-//        for (long x= 0; x < 500; x++) {
-////        do {
-//            proc2.printRegisters(" y:" + proc2.registers[jumpRegister], proc2);
-//            flow2.doInstruction(input.get(proc2.registers[jumpRegister]), proc2);
-//            proc2.registers[jumpRegister] = proc2.registers[jumpRegister] + 1;
-//        }
-////        } while (proc2.registers[jumpRegister] < input.size());
-
-        proc2.setRegisters(10551362,10551361,10551361,4,10551361,111331218952321L);  //  [10551362] [10551361] [10551361] [4] [10551361] [111331218952321]
-
-//        for (long x= 0; x < 20; x++) {
-        do {
-
-            flow2.doInstruction(input.get((int)proc2.registers[jumpRegister]), proc2);
-            proc2.registers[jumpRegister] = proc2.registers[jumpRegister] + 1;
-            proc2.printRegisters(" y:" + proc2.registers[jumpRegister], proc2);
-            if (proc2.registers[jumpRegister] >= input.size()) break;
-        } while (proc2.registers[jumpRegister] < input.size());
-        proc2.printRegisters(" y:" + proc2.registers[jumpRegister], proc2);
-        System.out.println("The value in register 0 is " + proc2.getRegisters()[0]);
+//        proc2.printRegisters(" y:" + instructionPointer, proc2);
+        System.out.println("\nThe value in register 0 is " + (sum + 10551361));
 
         finish = LocalTime.now();
         System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
-
-
     }
 }
