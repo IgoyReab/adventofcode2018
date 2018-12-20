@@ -319,17 +319,22 @@ public class Day_19 {
         Flowprogram flow2 = new Flowprogram();
 
         proc2.setRegisters(1,0,0,0,0,0);
-        proc2.setRegisters(10551361,10551361,10000000,2,10551361,0);
-        instructionPointer = 3;
+//        proc2.setRegisters(10551361,10551361,10000000,2,10551361,0);
+        instructionPointer = 0;
 
-        int maxD = (int)Math.sqrt(10551361);
+        for (int x = 0; x < 30; x++) {
+            proc2.registers[jumpRegister] = instructionPointer;
+            flow2.doInstruction(input.get((int)instructionPointer), proc2);
+            instructionPointer = (proc2.registers[jumpRegister] + 1);
+        }
+        int maxD = (int)Math.sqrt(proc2.registers[4]);
         int sum=1;
         for (int i = 2; i <= maxD; i++)
         {
-            if ((10551361 % i) == 0)
+            if ((proc2.registers[4] % i) == 0)
             {
                 sum += i;
-                int d = 10551361 /i;
+                int d = (int)proc2.registers[4] / i;
                 if (d!=i)
                     sum+=d;
             }

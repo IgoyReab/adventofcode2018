@@ -37,7 +37,11 @@
             <version>1.16.16</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>br.com.six2six</groupId>
+            <artifactId>bfgex</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     
 </project>
