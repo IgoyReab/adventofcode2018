@@ -41,7 +41,7 @@ class Flow {
         }
     }
 
-    public void printRegisters(String s, Flow p) {
+    public void printRegisters(String s, Processor21 p) {
         System.out.print(s);
         System.out.println("  Processor   : [" + p.getRegisters()[0] + "] [" + p.getRegisters()[1] + "] [" + p.getRegisters()[2] + "] [" + p.getRegisters()[3] + "] ["  + p.getRegisters()[4] + "] [" +  + p.getRegisters()[5] + "]");
 //        System.out.println();
@@ -290,9 +290,9 @@ public class Day_19 {
 
         input.remove(0);
 
-        Flow proc = new Flow();
-
         Flowprogram flow = new Flowprogram();
+
+        Flow  proc = new Flow();
 
 
         instructionPointer = proc.registers[jumpRegister];
