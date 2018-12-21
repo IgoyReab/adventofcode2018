@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 class Processor21 {
@@ -431,22 +433,6 @@ public class Day_21 {
         long count = 0;
         long mincount = Long.MAX_VALUE;
         processor21.setRegisters(11050031, 0, 0, 0, 0, 0);  // 1] [3] [19] [65536] [1024] [13606628]
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 13606628);  // 1] [3] [19] [65536] [1024] [13606628]
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 4869452);  // 1] [3] [19] [65536] [1024] [13606628]
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 10984132);  // 1] [3] [19] [65536] [1024] [13606628]
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 7107564);  // 1] [3] [19] [65536] [1024] [13606628]
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 11820964);  // 1] [3] [19] [65536] [1024] [13606628]
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 6790540);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 7890308);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 3928620);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 2909284);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 5659084);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 4019268);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 3832940);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 5926180);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 6078988);
-////        processor21.setRegisters(1, 255, 19, 65536, 65280, 9643780);
-
 
 //        processor21.printRegisters(" -> ", processor21);
 //        instructionPointer = processor21.registers[jumpRegister] + 1;
@@ -496,6 +482,46 @@ public class Day_21 {
 
         start = LocalTime.now();
 
+        Processor21 processor21_2 = new Processor21();
+        Program21 program21_2 = new Program21();
+        HashSet<Long> results = new HashSet<Long>();
+        processor21_2.setRegisters(11050031, 0, 0, 0, 0, 0);
+        instructionPointer = processor21_2.registers[jumpRegister];
+        long lastAdded = 0;
+        boolean isFirst = true;
+        do {
+            processor21_2.registers[jumpRegister] = instructionPointer;
+            program21_2.doInstruction(input.get((int) instructionPointer), processor21_2, false);
+            if (processor21_2.getRegisters()[jumpRegister] == 28) {
+                if (results.contains(processor21_2.getRegisters()[3])) break;
+                if (isFirst) {
+                    isFirst = false;
+                    System.out.println(processor21_2.getRegisters()[3]);
+                }
+                instructionPointer = (processor21_2.registers[jumpRegister] + 1);
+                lastAdded = processor21_2.getRegisters()[3];
+                results.add(processor21_2.getRegisters()[3]);
+            }
+        } while (true);
+
+//            interpreter = new ElfCode.ElfCodeInterpreter(input, 6);
+//            HashSet<int> results = new HashSet<int>();
+//            bool isFirst = true;
+//            int lastAdded = 0;
+//            while (interpreter.ExecuteStep() == 0) {
+//                if (interpreter.GetRegister(2) == 28) {
+//                    if (results.Contains(interpreter.GetRegister(3))) break;
+//
+//                    if (isFirst) {
+//                        isFirst = false;
+//                        Console.WriteLine(interpreter.GetRegister(3));
+//                    }
+//                    lastAdded = interpreter.GetRegister(3);
+//                    results.Add(interpreter.GetRegister(3));
+//                }
+//            };
+//            Console.WriteLine(lastAdded);
+//        }
 
         System.out.println("\nThe value in register 0 is " );
 
