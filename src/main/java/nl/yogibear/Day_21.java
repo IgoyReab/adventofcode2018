@@ -430,35 +430,35 @@ public class Day_21 {
 
         long count = 0;
         long mincount = Long.MAX_VALUE;
-        processor21.setRegisters(1, 0, 0, 0, 0, 0);  // 1] [3] [19] [65536] [1024] [13606628]
-        processor21.setRegisters(1, 255, 19, 65536, 65280, 13606628);  // 1] [3] [19] [65536] [1024] [13606628]
-        processor21.setRegisters(1, 255, 19, 65536, 65280, 4869452);  // 1] [3] [19] [65536] [1024] [13606628]
-        processor21.setRegisters(1, 255, 19, 65536, 65280, 10984132);  // 1] [3] [19] [65536] [1024] [13606628]
-        processor21.setRegisters(1, 255, 19, 65536, 65280, 7107564);  // 1] [3] [19] [65536] [1024] [13606628]
-        processor21.setRegisters(1, 255, 19, 65536, 65280, 11820964);  // 1] [3] [19] [65536] [1024] [13606628]
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 6790540);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 7890308);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 3928620);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 2909284);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 5659084);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 4019268);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 3832940);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 5926180);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 6078988);
-//        processor21.setRegisters(1, 255, 19, 65536, 65280, 9643780);
+        processor21.setRegisters(11050031, 0, 0, 0, 0, 0);  // 1] [3] [19] [65536] [1024] [13606628]
+//        processor21.setRegisters(1, 255, 19, 65536, 65280, 13606628);  // 1] [3] [19] [65536] [1024] [13606628]
+//        processor21.setRegisters(1, 255, 19, 65536, 65280, 4869452);  // 1] [3] [19] [65536] [1024] [13606628]
+//        processor21.setRegisters(1, 255, 19, 65536, 65280, 10984132);  // 1] [3] [19] [65536] [1024] [13606628]
+//        processor21.setRegisters(1, 255, 19, 65536, 65280, 7107564);  // 1] [3] [19] [65536] [1024] [13606628]
+//        processor21.setRegisters(1, 255, 19, 65536, 65280, 11820964);  // 1] [3] [19] [65536] [1024] [13606628]
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 6790540);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 7890308);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 3928620);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 2909284);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 5659084);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 4019268);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 3832940);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 5926180);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 6078988);
+////        processor21.setRegisters(1, 255, 19, 65536, 65280, 9643780);
 
 
-        processor21.printRegisters(" -> ", processor21);
-        instructionPointer = processor21.registers[jumpRegister] + 1;
-        for (long x = 1; x < 40 ; x++) {
-
-            processor21.registers[jumpRegister] = instructionPointer;
-            if (instructionPointer >= input.size()) break;
-            program21.doInstruction(input.get((int) instructionPointer), processor21, true);
-            instructionPointer = (processor21.registers[jumpRegister] + 1);
-            processor21.printRegisters("\t\t\t\t\t\t\t -> ", processor21);
-            System.out.println();
-        }
+//        processor21.printRegisters(" -> ", processor21);
+//        instructionPointer = processor21.registers[jumpRegister] + 1;
+//        for (long x = 1; x < 40 ; x++) {
+//
+//            processor21.registers[jumpRegister] = instructionPointer;
+//            if (instructionPointer >= input.size()) break;
+//            program21.doInstruction(input.get((int) instructionPointer), processor21, true);
+//            instructionPointer = (processor21.registers[jumpRegister] + 1);
+//            processor21.printRegisters("\t\t\t\t\t\t\t -> ", processor21);
+//            System.out.println();
+//        }
 
 //        for (long x = Integer.MAX_VALUE; x > 0; x=x-100000) {
 //
