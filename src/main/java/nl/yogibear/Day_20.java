@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-class Map {
+class Map20 {
     int maxx = 0, maxy = 0, minx = 2000, miny = 2000;
     int[][] dist = new int[2000][2000];
     boolean[][] visited = new boolean[2000][2000];
@@ -146,8 +146,8 @@ public class Day_20 {
 
 //        System.out.println(input.get(0));
 
-        Map map = new Map();
-        map.calculateMap(input.get(0));
+        Map20 map20 = new Map20();
+        map20.calculateMap(input.get(0));
 
         LocalTime finish = LocalTime.now();
         System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());

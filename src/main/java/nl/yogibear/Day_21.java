@@ -430,9 +430,9 @@ public class Day_21 {
 
         instructionPointer = processor21.registers[jumpRegister];
 
-        long count = 0;
-        long mincount = Long.MAX_VALUE;
-        processor21.setRegisters(11050031, 0, 0, 0, 0, 0);  // 1] [3] [19] [65536] [1024] [13606628]
+//        long count = 0;
+//        long mincount = Long.MAX_VALUE;
+//        processor21.setRegisters(11050031, 0,  0, 0, 0, 0);  // 1] [3] [19] [65536] [1024] [13606628]
 
 //        processor21.printRegisters(" -> ", processor21);
 //        instructionPointer = processor21.registers[jumpRegister] + 1;
@@ -482,28 +482,28 @@ public class Day_21 {
 
         start = LocalTime.now();
 
-        Processor21 processor21_2 = new Processor21();
-        Program21 program21_2 = new Program21();
-        HashSet<Long> results = new HashSet<Long>();
-        processor21_2.setRegisters(11050031, 0, 0, 0, 0, 0);
-        instructionPointer = processor21_2.registers[jumpRegister];
+
+        HashSet<Long> foundValues = new HashSet<Long>();
+        processor21.setRegisters(0, 0, 0, 0, 0, 0);
+        instructionPointer = processor21.registers[jumpRegister];
+        long count = 0;
         long lastAdded = 0;
-        boolean isFirst = true;
         do {
-            processor21_2.registers[jumpRegister] = instructionPointer;
-            program21_2.doInstruction(input.get((int) instructionPointer), processor21_2, false);
-            if (processor21_2.getRegisters()[jumpRegister] == 28) {
-                if (results.contains(processor21_2.getRegisters()[3])) break;
-                if (isFirst) {
-                    isFirst = false;
-                    System.out.println(processor21_2.getRegisters()[3]);
+            count++;
+            processor21.registers[jumpRegister] = instructionPointer;
+            if (instructionPointer >= input.size()) break;
+            program21.doInstruction(input.get((int) instructionPointer), processor21, false);
+            instructionPointer = (processor21.registers[jumpRegister] + 1);
+            if (processor21.registers[jumpRegister] == 28) {
+                if ((foundValues.add(processor21.registers[5]))) {
+                    lastAdded = processor21.registers[5];
+                    processor21.printRegisters("\ngtrr found at y:" + instructionPointer, processor21);
+                } else {
+                    break;
                 }
-                instructionPointer = (processor21_2.registers[jumpRegister] + 1);
-                lastAdded = processor21_2.getRegisters()[3];
-                results.add(processor21_2.getRegisters()[3]);
             }
         } while (true);
-
+//        processor21.printRegisters("\ngtrr found at y:" + instructionPointer, processor21);
 //            interpreter = new ElfCode.ElfCodeInterpreter(input, 6);
 //            HashSet<int> results = new HashSet<int>();
 //            bool isFirst = true;
@@ -523,7 +523,7 @@ public class Day_21 {
 //            Console.WriteLine(lastAdded);
 //        }
 
-        System.out.println("\nThe value in register 0 is " );
+        System.out.println("\nThe value in register 0 is " + lastAdded);
 
         finish = LocalTime.now();
         System.out.println("Duration (ms): " + Duration.between(start, finish).toMillis());
