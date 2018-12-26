@@ -167,9 +167,9 @@ public class Day_23 {
 
         mostInRange = 0;
 
-        for (long x = maxX - 1000; x < maxX + 1000; x++ ){
-            for (long y = maxY - 1000; y < maxY + 1000; y++ ) {
-                for (long z = maxZ - 1000; z < maxZ  + 1000; z++) {
+        for (long x = maxX - 100; x < maxX + 100; x++ ){
+            for (long y = maxY - 100; y < maxY + 100; y++ ) {
+                for (long z = maxZ - 100; z < maxZ  + 100; z++) {
 //                    System.out.println(x + ";"+ y + ";" + z);
                     countInRange = 0;
                     for (Nanobot n : bots) {
